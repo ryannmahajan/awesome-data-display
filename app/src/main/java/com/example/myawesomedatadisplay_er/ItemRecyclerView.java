@@ -17,56 +17,97 @@ public class ItemRecyclerView {
         RecyclerView recyclerView = v.findViewById(R.id.recycler_view);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
-        recyclerView.setAdapter(new ItemAdapter(JsonParser.getValidatedItemsFromJson(), activity));
-        recyclerView.addItemDecoration(new
-                DividerItemDecoration(activity, DividerItemDecoration.VERTICAL));
+        List<Object> itemsAndHeaders = getItemsAndHeaders();
+        recyclerView.setAdapter(new ItemAdapter(itemsAndHeaders, activity));
+//        recyclerView.addItemDecoration(new
+//                DividerItemDecoration(activity, DividerItemDecoration.VERTICAL));
         recyclerView.setHasFixedSize(true);
     }
 
-    public static class ItemAdapter extends RecyclerView.Adapter<ItemHolder> {
-        private final Activity mActivity;
-        private List<Item> mItems;
+    @NonNull
+    private static List<Object> getItemsAndHeaders() {
+        List<Item> items = JsonParser.getValidatedItemsFromJson();
+        List<Object> itemsAndHeaders = Header.addHeadersToList(items);
+        return itemsAndHeaders;
+    }
 
-        public ItemAdapter(List<Item> items, Activity activity) {
-            mItems = items;
+    public static class ItemAdapter extends RecyclerView.Adapter<CustomHolder> {
+        private static final int TYPE_HEADER = 0;
+        private static final int TYPE_ITEM = 1;
+
+        private final Activity mActivity;
+        private final List<Object> mObjects;
+
+        public ItemAdapter(List<Object> objects, Activity activity) {
+            mObjects = objects;
             mActivity = activity;
         }
 
         @NonNull
         @Override
-        public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new ItemHolder(mActivity.getLayoutInflater().inflate(R.layout.songle_list_item, parent, false));
+        public CustomHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            if (viewType == TYPE_ITEM) {
+                return new ItemHolder(mActivity.getLayoutInflater().inflate(R.layout.item, parent, false));
+            } else if (viewType == TYPE_HEADER) {
+                return new TitleHolder(mActivity.getLayoutInflater().inflate(R.layout.header, parent, false));
+            }
+            throw new RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ItemHolder holder, int position) {
-            holder.bindHolder(mItems.get(position));
+        public int getItemViewType(int position) {
+            if (mObjects.get(position) instanceof Header)
+                return TYPE_HEADER;
+            return TYPE_ITEM;
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull CustomHolder holder, int position) {
+            holder.bindHolder(mObjects.get(position));
         }
 
         @Override
         public int getItemCount() {
-            return mItems.size();
+            return mObjects.size();
         }
     }
 
-    private static class ItemHolder extends RecyclerView.ViewHolder {
-        // Your holder should contain a member variable
-        // for any view that will be set as you render a row
+    private abstract static class CustomHolder<T> extends RecyclerView.ViewHolder {
+        public CustomHolder(@NonNull View itemView) {
+            super(itemView);
+        }
+
+        abstract void bindHolder(T t);
+    }
+
+    private static class ItemHolder extends CustomHolder<Item> {
         public TextView idTextView;
         public TextView nameTextView;
-
 
         public ItemHolder(View itemView) {
             super(itemView);
 
-            idTextView = (TextView) itemView.findViewById(R.id.mtrl_list_item_secondary_text);
-            nameTextView = (TextView) itemView.findViewById(R.id.mtrl_list_item_text);
+            idTextView = (TextView) itemView.findViewById(R.id.id);
+            nameTextView = (TextView) itemView.findViewById(R.id.name);
         }
 
         public void bindHolder(Item item) {
             idTextView.setText(Integer.toString(item.getId()));
             nameTextView.setText(item.getName());
+        }
 
+    }
+
+    private static class TitleHolder extends CustomHolder<Header> {
+        private final TextView listIdTextView;
+
+        public TitleHolder(View itemView) {
+            super(itemView);
+            listIdTextView = (TextView) itemView.findViewById(R.id.list_id);
+        }
+
+        public void bindHolder(Header header) {
+            listIdTextView.setText(header.getText());
         }
     }
 }

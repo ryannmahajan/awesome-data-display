@@ -17,32 +17,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
-    android:minHeight="64dp">
+    android:background="?attr/selectableItemBackground">
 
     <TextView
-        android:id="@+id/mtrl_list_item_text"
+        android:id="@+id/list_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:paddingStart="16dp"
         android:paddingTop="16dp"
         android:paddingEnd="16dp"
-        android:paddingStart="16dp"
-        android:maxLines="1"
-        android:text="Text"
-        android:textAppearance="?attr/textAppearanceSubtitle1"/>
-<!--        android:textColor="@color/mtrl_list_item_tint"/>-->
+        android:paddingBottom="8dp"
+        android:text="Title"
+        android:textAppearance="?attr/textAppearanceHeadline4" />
+    <!--        android:textColor="@color/mtrl_list_item_tint"/>-->
 
-    <TextView
-        android:id="@+id/mtrl_list_item_secondary_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/mtrl_list_item_text"
-        android:layout_gravity="center_vertical"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp"
-        android:maxLines="2"
-        android:text="Subtext"
-        android:textAppearance="?attr/textAppearanceBody2"/>
-<!--        android:textColor="@color/mtrl_list_item_tint"/>-->
+    <!--        android:textColor="@color/mtrl_list_item_tint"/>-->
 
 </RelativeLayout>
