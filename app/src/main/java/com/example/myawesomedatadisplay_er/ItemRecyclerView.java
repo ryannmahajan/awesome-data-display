@@ -17,16 +17,9 @@ public class ItemRecyclerView {
         RecyclerView recyclerView = v.findViewById(R.id.recycler_view);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
-        String json = "[\n" +
-                "{\"id\": 755, \"listId\": 2, \"name\": \"\"},\n" +
-                "{\"id\": 203, \"listId\": 2, \"name\": \"\"},\n" +
-                "{\"id\": 684, \"listId\": 1, \"name\": \"Item 684\"},\n" +
-                "{\"id\": 276, \"listId\": 1, \"name\": \"Item 276\"},\n" +
-                "{\"id\": 736, \"listId\": 3, \"name\": null}]";
-        recyclerView.setAdapter(new ItemAdapter(JsonParser.parseItemsFromJson(json), activity));
-        RecyclerView.ItemDecoration itemDecoration = new
-                DividerItemDecoration(activity, DividerItemDecoration.VERTICAL);
-        recyclerView.addItemDecoration(itemDecoration);
+        recyclerView.setAdapter(new ItemAdapter(JsonParser.getValidatedItemsFromJson(), activity));
+        recyclerView.addItemDecoration(new
+                DividerItemDecoration(activity, DividerItemDecoration.VERTICAL));
         recyclerView.setHasFixedSize(true);
     }
 

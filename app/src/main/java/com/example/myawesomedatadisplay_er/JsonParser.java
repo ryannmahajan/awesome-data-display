@@ -1,6 +1,7 @@
 package com.example.myawesomedatadisplay_er;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -9,15 +10,16 @@ import org.json.JSONObject;
 
 public class JsonParser {
 
-    public static void main(String[] args) {
+    public static List<Item> getValidatedItemsFromJson() {
         String json = "[\n" +
                 "{\"id\": 755, \"listId\": 2, \"name\": \"\"},\n" +
-                "{\"id\": 203, \"listId\": 2, \"name\": \"\"},\n" +
                 "{\"id\": 684, \"listId\": 1, \"name\": \"Item 684\"},\n" +
                 "{\"id\": 276, \"listId\": 1, \"name\": \"Item 276\"},\n" +
-                "{\"id\": 736, \"listId\": 3, \"name\": null}]";
+                "{\"id\": 345, \"listId\": 3, \"name\": \"Item 345\"}]";
         List<Item> items = parseItemsFromJson(json);
-        System.out.println(items);
+        removeInvalidNamedItems(items);
+        sortItems(items);
+        return items;
     }
 
     public static List<Item> parseItemsFromJson(String json) {
@@ -39,11 +41,21 @@ public class JsonParser {
     }
 
     private static Item parseSingleItemFromJson(JSONObject c) throws JSONException {
-        int id = Integer.parseInt(c.getString("id"));
-        int listId = Integer.parseInt(c.getString("listId"));
+        int id = c.getInt("id");
+        int listId = c.getInt("listId");
         String name = c.getString("name");
 
         return new Item(id, listId, name);
     }
+
+    public static void removeInvalidNamedItems(List<Item> items) {
+        items.removeIf(item -> (item.getName() == null || item.getName().isEmpty()));
+    }
+
+    public static void sortItems(List<Item> items) {
+        Collections.sort(items);
+    }
+
+
 
 }
