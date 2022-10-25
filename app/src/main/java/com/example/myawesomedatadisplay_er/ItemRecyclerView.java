@@ -28,6 +28,7 @@ public class ItemRecyclerView {
     static void setup_recycler_view(Activity activity, View v) {
         mRecyclerView = v.findViewById(R.id.recycler_view);
 
+
         mRecyclerView.setLayoutManager(new LinearLayoutManager(activity));
         download_and_setup_json(activity);
 //        recyclerView.addItemDecoration(new

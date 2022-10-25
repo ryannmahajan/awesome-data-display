@@ -50,6 +50,5 @@ public class ItemManipulationTests {
                         clonedItems.get(2).getId()==345
         );
     }
-    // todo: how to debug app
 
 }

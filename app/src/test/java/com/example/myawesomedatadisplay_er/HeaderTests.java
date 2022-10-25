@@ -18,7 +18,6 @@ public class HeaderTests {
         List<Object> gotResult = Header.addHeadersToList(items);
         List<Object> expectedHeaders = List.of(new Header("3"), new Header("1"));
 
-        // todo: yes, this bunches up index, size and equality checks
         assertTrue(gotResult.get(0).equals(expectedHeaders.get(0)) &&
                 gotResult.get(2).equals(expectedHeaders.get(1)));
         assertEquals(4, gotResult.size());
