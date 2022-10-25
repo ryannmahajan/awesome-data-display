@@ -1,32 +1,64 @@
 package com.example.myawesomedatadisplay_er;
 
+import static com.example.myawesomedatadisplay_er.Network.downloadFileIfNotPresent;
+import static com.example.myawesomedatadisplay_er.Network.get_text_from_file;
+
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.core.os.HandlerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ItemRecyclerView {
-    static void setup_recycler_view(Activity activity, View v) {
-        RecyclerView recyclerView = v.findViewById(R.id.recycler_view);
+    private static RecyclerView mRecyclerView;
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
-        List<Object> itemsAndHeaders = getItemsAndHeaders();
-        recyclerView.setAdapter(new ItemAdapter(itemsAndHeaders, activity));
+    static void setup_recycler_view(Activity activity, View v) {
+        mRecyclerView = v.findViewById(R.id.recycler_view);
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(activity));
+        download_and_setup_json(activity);
 //        recyclerView.addItemDecoration(new
 //                DividerItemDecoration(activity, DividerItemDecoration.VERTICAL));
-        recyclerView.setHasFixedSize(true);
     }
 
     @NonNull
-    private static List<Object> getItemsAndHeaders() {
-        List<Item> items = JsonParser.getValidatedItemsFromJson();
+    private static void download_and_setup_json(Activity activity) {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Handler handler = HandlerCompat.createAsync(Looper.getMainLooper());
+
+        executorService.execute(() -> {
+
+            downloadFileIfNotPresent(activity);
+            String text = get_text_from_file(activity);
+            List<Object> itemsAndHeaders = getItemsAndHeaders(text);
+
+            handler.post(() -> {
+                updateRecyclerView(activity, itemsAndHeaders);
+                activity.findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
+            });
+        });
+
+    }
+
+    private static void updateRecyclerView(Activity activity, List<Object> itemsAndHeaders) {
+        mRecyclerView.setAdapter(new ItemAdapter(itemsAndHeaders, activity));
+        mRecyclerView.setHasFixedSize(true);
+    }
+
+    @NonNull
+    private static List<Object> getItemsAndHeaders(String json) {
+        List<Item> items = JsonParser.getValidatedItemsFromJson(json);
         List<Object> itemsAndHeaders = Header.addHeadersToList(items);
         return itemsAndHeaders;
     }

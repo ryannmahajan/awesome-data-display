@@ -10,12 +10,7 @@ import org.json.JSONObject;
 
 public class JsonParser {
 
-    public static List<Item> getValidatedItemsFromJson() {
-        String json = "[\n" +
-                "{\"id\": 755, \"listId\": 2, \"name\": \"\"},\n" +
-                "{\"id\": 684, \"listId\": 1, \"name\": \"Item 684\"},\n" +
-                "{\"id\": 276, \"listId\": 1, \"name\": \"Item 276\"},\n" +
-                "{\"id\": 345, \"listId\": 3, \"name\": \"Item 345\"}]";
+    public static List<Item> getValidatedItemsFromJson(String json) {
         List<Item> items = parseItemsFromJson(json);
         removeInvalidNamedItems(items);
         sortItems(items);
@@ -49,7 +44,8 @@ public class JsonParser {
     }
 
     public static void removeInvalidNamedItems(List<Item> items) {
-        items.removeIf(item -> (item.getName() == null || item.getName().isEmpty()));
+        items.removeIf(item -> (item.getName() == null || item.getName().isEmpty()) ||
+                item.getName().equals("null"));
     }
 
     public static void sortItems(List<Item> items) {
