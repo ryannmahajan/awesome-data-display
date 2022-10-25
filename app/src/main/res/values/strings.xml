@@ -1,4 +1,3 @@
 <resources>
-    <string name="app_name">My Awesome Data Display-er</string>
-    <string name="id_prefix">\"ID:\"</string>
+    <string name="app_name">Awesome Data Display</string>
 </resources>
