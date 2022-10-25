@@ -29,7 +29,7 @@
         android:paddingEnd="16dp"
         android:paddingBottom="8dp"
         android:text="Title"
-        android:textAppearance="?attr/textAppearanceHeadline4" />
+        android:textAppearance="?attr/textAppearanceHeadline5" />
     <!--        android:textColor="@color/mtrl_list_item_tint"/>-->
 
     <!--        android:textColor="@color/mtrl_list_item_tint"/>-->
