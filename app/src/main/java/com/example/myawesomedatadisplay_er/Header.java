@@ -20,7 +20,7 @@ public class Header {
     }
 
     public Header(String text) {
-        this.mText = "Group "+text;
+        this.mText = text;
     }
 
     public static List<Object> addHeadersToList(List<Item> items) {

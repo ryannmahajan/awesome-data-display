@@ -16,6 +16,8 @@ import androidx.core.os.HandlerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.qtalk.recyclerviewfastscroller.RecyclerViewFastScroller;
+
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -63,7 +65,7 @@ public class ItemRecyclerView {
         return itemsAndHeaders;
     }
 
-    public static class ItemAdapter extends RecyclerView.Adapter<CustomHolder> {
+    public static class ItemAdapter extends RecyclerView.Adapter<CustomHolder> implements RecyclerViewFastScroller.OnPopupTextUpdate {
         private static final int TYPE_HEADER = 0;
         private static final int TYPE_ITEM = 1;
 
@@ -102,6 +104,16 @@ public class ItemRecyclerView {
         public int getItemCount() {
             return mObjects.size();
         }
+
+        @NonNull
+        @Override
+        public CharSequence onChange(int position) {
+            if (getItemViewType(position)==TYPE_HEADER) {
+                return ((Header)mObjects.get(position)).getText();
+            } else {
+                return Integer.toString(((Item)mObjects.get(position)).getListId());
+            }
+        }
     }
 
     private abstract static class CustomHolder<T> extends RecyclerView.ViewHolder {
@@ -124,7 +136,7 @@ public class ItemRecyclerView {
         }
 
         public void bindHolder(Item item) {
-            idTextView.setText(Integer.toString(item.getId()));
+            idTextView.setText(String.format("ID: %s", item.getId()));
             nameTextView.setText(item.getName());
         }
 
@@ -139,7 +151,7 @@ public class ItemRecyclerView {
         }
 
         public void bindHolder(Header header) {
-            listIdTextView.setText(header.getText());
+            listIdTextView.setText(String.format("Group %s", header.getText()));
         }
     }
 }
